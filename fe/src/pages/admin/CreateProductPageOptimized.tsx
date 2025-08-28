@@ -773,7 +773,7 @@ const CreateProductPageOptimized: React.FC = () => {
           <div className="space-y-6">
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
               <h3 className="font-medium text-indigo-900 dark:text-indigo-100 mb-2">
-                Thông số kỹ thuật
+                Thông số sản phẩm
               </h3>
               <p className="text-sm text-indigo-700 dark:text-indigo-300">
                 Thêm thông số kỹ thuật chi tiết cho sản phẩm

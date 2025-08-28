@@ -10,7 +10,7 @@ const PrivacyPolicyPage: React.FC = () => {
           Privacy Policy
         </h1>
         <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
-          Last updated: June 1, 2023
+          Last updated: May 5, 2025
         </p>
       </div>
 
@@ -158,11 +158,11 @@ const PrivacyPolicyPage: React.FC = () => {
             If you have any questions about this Privacy Policy, please contact
             us at:
             <br />
-            Email: privacy@shopmini.com
+            Email: phamdat4410@gmail.com
             <br />
-            Phone: +1 (555) 123-4567
+            Phone: +84 123 456 789
             <br />
-            Address: 123 Commerce Street, Suite 500, New York, NY 10001
+            Address: 77 Thanh Loc, Phuong Thanh Loc, Quan 12, TP. Ho Chi Minh
           </p>
         </div>
       </div>

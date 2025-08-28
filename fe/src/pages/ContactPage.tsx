@@ -210,10 +210,10 @@ const ContactPage: React.FC = () => {
                   Phone
                 </h3>
                 <p className="text-neutral-600 dark:text-neutral-400 mt-1">
-                  +1 (555) 123-4567
+                  +84 123 456 789
                 </p>
                 <p className="text-neutral-600 dark:text-neutral-400">
-                  Monday - Friday, 9:00 AM - 6:00 PM EST
+                  Monday - Friday, 9:00 AM - 6:00 PM 
                 </p>
               </div>
             </div>
@@ -240,7 +240,7 @@ const ContactPage: React.FC = () => {
                   Email
                 </h3>
                 <p className="text-neutral-600 dark:text-neutral-400 mt-1">
-                  support@shopmini.com
+                  phamdat4410@gmail.com
                 </p>
                 <p className="text-neutral-600 dark:text-neutral-400">
                   We&apos;ll respond within 24-48 hours
@@ -276,11 +276,11 @@ const ContactPage: React.FC = () => {
                   Address
                 </h3>
                 <p className="text-neutral-600 dark:text-neutral-400 mt-1">
-                  123 Commerce Street
+                  77 Thanh Loc
                   <br />
-                  Suite 500
+                  Phuong Thanh Loc
                   <br />
-                  New York, NY 10001
+                  Quan 12, TP.HCM
                 </p>
               </div>
             </div>

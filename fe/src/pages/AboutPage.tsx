@@ -22,7 +22,7 @@ const AboutPage: React.FC = () => {
             Our Story
           </h2>
           <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-            Founded in 2023, ShopMini started with a simple idea: make shopping
+            Founded in 2025, ShopMini started with a simple idea: make shopping
             easier, more enjoyable, and accessible to everyone. What began as a
             small online store has grown into a platform offering thousands of
             products across multiple categories.
@@ -137,55 +137,24 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Team section */}
-      <div className="mb-20">
-        <h2 className="text-3xl font-bold text-neutral-900 dark:text-white mb-10 text-center">
-          Our Team
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              name: 'Sarah Johnson',
-              role: 'Founder & CEO',
-              image:
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-            },
-            {
-              name: 'Michael Chen',
-              role: 'CTO',
-              image:
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-            },
-            {
-              name: 'Emily Rodriguez',
-              role: 'Head of Product',
-              image:
-                'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-            },
-            {
-              name: 'David Kim',
-              role: 'Customer Experience',
-              image:
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-            },
-          ].map((member, index) => (
-            <div key={index} className="text-center">
-              <div className="rounded-full overflow-hidden w-48 h-48 mx-auto mb-4">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
-                {member.name}
-              </h3>
-              <p className="text-neutral-600 dark:text-neutral-400">
-                {member.role}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+<div className="flex justify-center">
+  <div className="text-center">
+    <div className="rounded-full overflow-hidden w-48 h-48 mx-auto mb-4">
+      <img
+        src="https://res.cloudinary.com/dolzkxe8r/image/upload/v1756404465/vngoods_69_475865_3x4_xknznn.avif"
+        alt="Sarah Johnson"
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
+      Pham Van Thanh Dat
+    </h3>
+    <p className="text-neutral-600 dark:text-neutral-400">
+      Team Leader
+    </p>
+  </div>
+</div>
+
 
       {/* CTA section */}
       <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-12 text-center">

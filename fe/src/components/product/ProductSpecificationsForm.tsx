@@ -8,7 +8,6 @@ import {
   Col,
   Space,
   Typography,
-  Divider,
   Select,
 } from 'antd';
 import {
@@ -39,78 +38,32 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
   );
   const form = Form.useFormInstance();
 
-  console.log(initialSpecifications);
-
   // Load initial specifications when prop changes
   useEffect(() => {
     if (initialSpecifications && initialSpecifications.length > 0) {
-      console.log(
-        'ProductSpecificationsForm - Loading initial specifications:',
-        initialSpecifications
-      );
-      // Ensure each spec has a unique ID
       const specsWithIds = initialSpecifications.map((spec, index) => ({
         ...spec,
         id: spec.id || `spec-${Date.now()}-${index}`,
       }));
-      console.log('ProductSpecificationsForm - Specs with IDs:', specsWithIds);
       setSpecifications(specsWithIds);
     }
   }, [initialSpecifications]);
 
-  // Predefined categories for specifications
+  // Nhóm thông số cho quần áo
   const specificationCategories = [
-    'Hiệu năng',
-    'Màn hình',
+    'Kích cỡ',
+    'Chất liệu & cảm giác',
     'Thiết kế',
-    'Kết nối',
-    'Pin & Nguồn',
-    'Hệ điều hành',
-    'Bảo mật',
-    'Âm thanh',
-    'Bàn phím',
-    'Camera',
+    'Chăm sóc',
+    'Thông tin khác',
     'Thông số chung',
     'Khác',
   ];
 
-  // Sync specifications with form
+  // Sync specifications với form
   useEffect(() => {
     form.setFieldValue('specifications', specifications);
   }, [specifications, form]);
-
-  // Load specifications when form field changes
-
-  // Fallback: Check form values periodically (for timing issues)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentSpecs = form.getFieldValue('specifications');
-      if (
-        currentSpecs &&
-        Array.isArray(currentSpecs) &&
-        currentSpecs.length > 0
-      ) {
-        if (JSON.stringify(currentSpecs) !== JSON.stringify(specifications)) {
-          console.log(
-            'ProductSpecificationsForm - Interval check found specifications:',
-            currentSpecs
-          );
-          setSpecifications(currentSpecs);
-          clearInterval(interval); // Stop checking once found
-        }
-      }
-    }, 500); // Check every 500ms
-
-    // Clear interval after 10 seconds
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-    }, 10000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, []); // Only run once on mount
 
   const addSpecification = () => {
     const newSpec: Specification = {
@@ -119,7 +72,7 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
       value: '',
       category: 'Thông số chung',
     };
-    setSpecifications([...specifications, newSpec]);
+    setSpecifications((prev) => [...prev, newSpec]);
   };
 
   const updateSpecification = (
@@ -127,80 +80,46 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
     field: keyof Specification,
     value: string
   ) => {
-    console.log(
-      `Updating specification ${id}, field: ${field}, value: ${value}`
+    setSpecifications((specs) =>
+      specs.map((spec) => (spec.id === id ? { ...spec, [field]: value } : spec))
     );
-    setSpecifications((specs) => {
-      const updated = specs.map((spec) =>
-        spec.id === id ? { ...spec, [field]: value } : spec
-      );
-      console.log('Updated specifications:', updated);
-      return updated;
-    });
   };
 
   const removeSpecification = (id: string) => {
     setSpecifications((specs) => specs.filter((spec) => spec.id !== id));
   };
 
+  // Template mẫu cho quần áo (giữ tên hàm để không ảnh hưởng nơi khác)
   const addSampleSpecifications = () => {
+    const now = Date.now();
     const sampleSpecs: Specification[] = [
-      {
-        id: `sample-${Date.now()}-1`,
-        name: 'CPU',
-        value: 'Intel Core i5-1235U',
-        category: 'Hiệu năng',
-      },
-      {
-        id: `sample-${Date.now()}-2`,
-        name: 'RAM',
-        value: '8GB DDR4 3200MHz',
-        category: 'Hiệu năng',
-      },
-      {
-        id: `sample-${Date.now()}-3`,
-        name: 'Ổ cứng',
-        value: '512GB SSD NVMe',
-        category: 'Hiệu năng',
-      },
-      {
-        id: `sample-${Date.now()}-4`,
-        name: 'Màn hình',
-        value: '14 inch Full HD IPS',
-        category: 'Màn hình',
-      },
-      {
-        id: `sample-${Date.now()}-5`,
-        name: 'Trọng lượng',
-        value: '1.4kg',
-        category: 'Thiết kế',
-      },
-      {
-        id: `sample-${Date.now()}-6`,
-        name: 'Pin',
-        value: '39WHrs 3-cell',
-        category: 'Pin & Nguồn',
-      },
-      {
-        id: `sample-${Date.now()}-7`,
-        name: 'Hệ điều hành',
-        value: 'Windows 11 Home',
-        category: 'Hệ điều hành',
-      },
+      { id: `sample-${now}-1`,  name: 'Size',       value: 'M',             category: 'Kích cỡ' },
+      { id: `sample-${now}-2`,  name: 'Dáng',       value: 'Regular',       category: 'Kích cỡ' },
+      { id: `sample-${now}-3`,  name: 'Chất liệu',  value: 'Cotton 100%',   category: 'Chất liệu & cảm giác' },
+      { id: `sample-${now}-4`,  name: 'Độ dày',     value: 'Vừa',           category: 'Chất liệu & cảm giác' },
+      { id: `sample-${now}-5`,  name: 'Độ co giãn', value: 'Ít',            category: 'Chất liệu & cảm giác' },
+      { id: `sample-${now}-6`,  name: 'Màu',        value: 'Đen',           category: 'Thiết kế' },
+      { id: `sample-${now}-7`,  name: 'Họa tiết',   value: 'Trơn',          category: 'Thiết kế' },
+      { id: `sample-${now}-8`,  name: 'Cổ áo',      value: 'Cổ tròn',       category: 'Thiết kế' },
+      { id: `sample-${now}-9`,  name: 'Tay áo',     value: 'Ngắn',          category: 'Thiết kế' },
+      { id: `sample-${now}-10`, name: 'HDSD giặt',  value: 'Giặt máy 30°C', category: 'Chăm sóc' },
+      { id: `sample-${now}-11`, name: 'Ủi',         value: '≤110°C',        category: 'Chăm sóc' },
+      { id: `sample-${now}-12`, name: 'Giới tính',  value: 'Unisex',        category: 'Thông tin khác' },
+      { id: `sample-${now}-13`, name: 'Mùa',        value: 'Quanh năm',     category: 'Thông tin khác' },
+      { id: `sample-${now}-14`, name: 'SKU',        value: 'AUTO-GEN',      category: 'Thông tin khác' },
     ];
 
-    setSpecifications([...specifications, ...sampleSpecs]);
+    setSpecifications((prev) => [...prev, ...sampleSpecs]);
   };
 
   return (
     <div style={{ padding: '24px' }}>
       <Title level={3}>
         <InfoCircleOutlined style={{ marginRight: 8 }} />
-        Thông số kỹ thuật sản phẩm
+        Thông số sản phẩm
       </Title>
       <Text type="secondary" style={{ display: 'block', marginBottom: 24 }}>
-        Thêm các thông số kỹ thuật chi tiết để khách hàng có thể so sánh và đánh
-        giá sản phẩm
+        Thêm các thông số chi tiết để khách hàng có thể so sánh và đánh giá sản phẩm
       </Text>
 
       {/* Add Specification Button */}
@@ -212,10 +131,10 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
             onClick={addSpecification}
             size="large"
           >
-            Thêm thông số kỹ thuật
+            Thêm thông tin sản phẩm
           </Button>
           <Button type="default" onClick={addSampleSpecifications} size="large">
-            Thêm mẫu laptop
+            Thêm mẫu quần áo
           </Button>
         </Space>
       </div>
@@ -233,7 +152,7 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
                 <Row gutter={16} align="middle">
                   <Col span={6}>
                     <Input
-                      placeholder="Tên thông số (VD: CPU, RAM...)"
+                      placeholder="Tên thông số (VD: Size, Chất liệu, Màu...)"
                       value={spec.name}
                       onChange={(e) =>
                         updateSpecification(spec.id, 'name', e.target.value)
@@ -242,7 +161,7 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
                   </Col>
                   <Col span={10}>
                     <TextArea
-                      placeholder="Giá trị thông số (VD: Intel Core i5, 8GB DDR4...)"
+                      placeholder="Giá trị thông số (VD: M, Cotton 100%, Đen...)"
                       value={spec.value}
                       onChange={(e) =>
                         updateSpecification(spec.id, 'value', e.target.value)
@@ -253,19 +172,17 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
                   </Col>
                   <Col span={6}>
                     <Select
-                      placeholder="Chọn danh mục"
+                      placeholder="Chọn nhóm"
                       value={spec.category}
                       onChange={(value) =>
                         updateSpecification(spec.id, 'category', value)
                       }
                       style={{ width: '100%' }}
-                    >
-                      {specificationCategories.map((category) => (
-                        <Select.Option key={category} value={category}>
-                          {category}
-                        </Select.Option>
-                      ))}
-                    </Select>
+                      options={specificationCategories.map((c) => ({
+                        label: c,
+                        value: c,
+                      }))}
+                    />
                   </Col>
                   <Col span={2}>
                     <Button
@@ -293,11 +210,10 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
         >
           <div style={{ fontSize: '48px', marginBottom: 16 }}>📋</div>
           <Title level={4} style={{ color: '#999' }}>
-            Chưa có thông số kỹ thuật nào
+            Chưa có thông tin sản phẩm nào
           </Title>
           <Text type="secondary">
-            Nhấn nút "Thêm thông số kỹ thuật" để bắt đầu thêm thông số cho sản
-            phẩm
+            Nhấn nút "Thêm thông tin sản phẩm" hoặc "Thêm mẫu quần áo" để bắt đầu
           </Text>
         </Card>
       )}
@@ -311,7 +227,7 @@ const ProductSpecificationsForm: React.FC<ProductSpecificationsFormProps> = ({
       {specifications.length > 0 && (
         <Card title="📊 Tổng quan" style={{ marginTop: 24 }} size="small">
           <Text strong>
-            Tổng cộng: {specifications.length} thông số kỹ thuật
+            Tổng cộng: {specifications.length} thông tin sản phẩm
           </Text>
         </Card>
       )}

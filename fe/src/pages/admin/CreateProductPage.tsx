@@ -534,7 +534,7 @@ const CreateProductPage: React.FC = () => {
                 : '#999',
           }}
         >
-          2. Thông số kỹ thuật <span style={{ color: '#ff4d4f' }}>*</span>{' '}
+          2. Thông số sản phẩm <span style={{ color: '#ff4d4f' }}>*</span>{' '}
           {completedSteps.specifications ? '✓' : ''}
         </span>
       ),
@@ -563,7 +563,7 @@ const CreateProductPage: React.FC = () => {
                 : '#999',
           }}
         >
-          3. Thuộc tính <span style={{ color: '#ff4d4f' }}>*</span>{' '}
+          3. Thêm tùy chọn sản phẩm <span style={{ color: '#ff4d4f' }}>*</span>{' '}
           {completedSteps.attributes ? '✓' : ''}
         </span>
       ),

@@ -80,6 +80,13 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // API routes
 app.use('/api', routes);
 
+
+
+// 👉 thêm Cloudinary routes (sau /api chung, trước swagger)
+const uploadCloudRoutes = require('./routes/upload.cloud.routes');
+app.use('/api/upload-cloud', uploadCloudRoutes);
+
+
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (req, res) => {

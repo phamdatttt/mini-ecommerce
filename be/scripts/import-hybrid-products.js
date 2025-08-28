@@ -50,7 +50,7 @@ function slugifyAscii(input) {
 const sampleProducts = [
   /* 1) Áo thun nam basic */
   {
-    name: 'Áo thun nam basic cổ tròn',
+    name: 'Áo thun nam basic ',
     shortDescription: 'Cotton 100% 200gsm, thoáng mát, form regular',
     description: 'Áo thun nam cotton 100% thấm hút, đường may 2 kim, cổ rib bền dáng. Dễ phối quần jean/kaki.',
     price: 199000,

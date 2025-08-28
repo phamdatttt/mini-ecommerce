@@ -334,7 +334,7 @@ const TrackOrderPage: React.FC = () => {
                 />
               </svg>
               <span className="text-neutral-700 dark:text-neutral-300">
-                support@shopmini.com
+                phamdat4410@gmail.com
               </span>
             </div>
             <div className="flex items-center">
@@ -353,7 +353,7 @@ const TrackOrderPage: React.FC = () => {
                 />
               </svg>
               <span className="text-neutral-700 dark:text-neutral-300">
-                +1 (555) 123-4567
+                +84 123 456 789
               </span>
             </div>
           </div>

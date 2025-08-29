@@ -50,45 +50,85 @@ function slugifyAscii(input) {
 const sampleProducts = [
   /* 1) Áo thun nam basic */
   {
-    name: 'Áo thun nam basic ',
-    shortDescription: 'Cotton 100% 200gsm, thoáng mát, form regular',
-    description: 'Áo thun nam cotton 100% thấm hút, đường may 2 kim, cổ rib bền dáng. Dễ phối quần jean/kaki.',
-    price: 199000,
-    compareAtPrice: 259000,
-    thumbnail: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400&h=400&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&h=800&fit=crop',
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=800&fit=crop',
-    ],
-    category: 'Thời trang nam',
-    tags: ['tee','cotton','basic','regular'],
-    status: 'active',
-    featured: true,
-    brand: 'Local Brand',
-    model: 'TEE-BASIC-RT',
-    condition: 'new',
-    warrantyMonths: 1,
-    specifications: {
-      material: '100% Cotton 200gsm',
-      color: 'Đen/Trắng/Xanh navy/Ghi',
-      fit: 'Regular fit',
-      care: 'Giặt máy nhẹ, ủi 110°C, không tẩy',
-      origin: 'Việt Nam',
-      design_detail: 'Cổ rib 1.2cm, may 2 kim',
-    },
-    attributes: [
-      { name: 'Size', values: ['S','M','L','XL'] },
-      { name: 'Màu', values: ['Đen','Trắng','Xanh navy','Ghi'] },
-    ],
-    variants: [
-      { name: 'Đen - S', displayName: 'Đen / S', attributes: { Size:'S', Màu:'Đen' }, price:199000, stock:20, isDefault:true },
-      { name: 'Đen - M', displayName: 'Đen / M', attributes: { Size:'M', Màu:'Đen' }, price:199000, stock:25 },
-      { name: 'Đen - L', displayName: 'Đen / L', attributes: { Size:'L', Màu:'Đen' }, price:199000, stock:18 },
-      { name: 'Trắng - M', displayName: 'Trắng / M', attributes: { Size:'M', Màu:'Trắng' }, price:199000, stock:22 },
-      { name: 'Xanh navy - L', displayName: 'Xanh navy / L', attributes: { Size:'L', Màu:'Xanh navy' }, price:199000, stock:15 },
-      { name: 'Ghi - XL', displayName: 'Ghi / XL', attributes: { Size:'XL', Màu:'Ghi' }, price:199000, stock:8 },
-    ],
+  name: 'Áo thun nam basic',
+  shortDescription: 'Cotton 100% 200gsm, thoáng mát, form regular',
+  description: `
+**Chất liệu**
+- 100% Cotton
+- Vải 220gsm dày dặn
+
+**Kiểu dáng**
+- Regular fit
+- Phù hợp mặc hàng ngày
+- Người mẫu: 186cm - 77kg, mặc áo 2XL
+
+**Tính năng**
+- Bề mặt vải mềm mịn và ít xù lông
+
+**Cách giặt và bảo quản Áo thun nam Cotton 220gsm**
+Để giữ gìn áo thun nam Cotton bền bỉ và giảm thiểu việc phai màu sau một thời gian sử dụng, chàng nên lưu ngay những mẹo giặt và bảo quản dưới đây.
+
+*Giặt áo thun nam Cotton 220GSM:*
+- Giặt áo ở nhiệt độ dưới 40 độ C để giữ màu áo không bị phai và hư hỏng
+- Phân loại màu áo và không giặt chung với áo trắng để tránh phai màu
+- Nếu áo bị bẩn, hãy ngâm với nước giặt trong 30 phút rồi vò nhẹ phần bị bẩn trước khi giặt
+- Không sử dụng chất tẩy giặt quá mạnh
+
+*Bảo quản áo thun nam Cotton 220GSM:*
+- Tránh phơi áo trực tiếp dưới ánh nắng mặt trời
+- Lộn trái áo trước khi phơi để tránh phai màu
+- Gấp gọn hoặc treo nằm ngang trong tủ quần áo, tránh nơi ẩm mốc
+
+**Câu hỏi thường gặp**
+1. *Áo cotton có bị co rút, mất phom dáng sau nhiều lần giặt không?*  
+   → Sản phẩm được xử lý công nghệ hiện đại, hạn chế tối đa sự co rút kích thước sau khi giặt giũ.
+
+2. *Chất liệu cotton có đảm bảo an toàn cho làn da nhạy cảm không?*  
+   → Cotton 100% nguyên chất là chất liệu hoàn toàn tự nhiên, thân thiện và an toàn cho mọi làn da.
+
+3. *Áo có mau phai màu sau một thời gian sử dụng không?*  
+   → Với công nghệ nhuộm hiện đại, màu sắc của áo được đảm bảo bền đẹp lâu dài.
+
+4. *Áo thun cotton này có thấm hút mồ hôi tốt khi vận động không?*  
+   → Chất liệu cotton tự nhiên có khả năng thấm hút mồ hôi rất tốt, luôn giữ cơ thể khô thoáng.
+  `,
+  price: 199000,
+  compareAtPrice: 259000,
+  thumbnail: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400&h=400&fit=crop',
+  images: [
+    'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&h=800&fit=crop',
+    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=800&fit=crop',
+  ],
+  category: 'Thời trang nam',
+  tags: ['tee','cotton','basic','regular'],
+  status: 'active',
+  featured: true,
+  brand: 'Local Brand',
+  model: 'TEE-BASIC-RT',
+  condition: 'new',
+  warrantyMonths: 1,
+  specifications: {
+    material: '100% Cotton 200gsm',
+    color: 'Đen/Trắng/Xanh navy/Ghi',
+    fit: 'Regular fit',
+    care: 'Giặt máy nhẹ, ủi 110°C, không tẩy',
+    origin: 'Việt Nam',
+    design_detail: 'Cổ rib 1.2cm, may 2 kim',
   },
+  attributes: [
+    { name: 'Size', values: ['S','M','L','XL'] },
+    { name: 'Màu', values: ['Đen','Trắng','Xanh navy','Ghi'] },
+  ],
+  variants: [
+    { name: 'Đen - S', displayName: 'Đen / S', attributes: { Size:'S', Màu:'Đen' }, price:199000, stock:20, isDefault:true },
+    { name: 'Đen - M', displayName: 'Đen / M', attributes: { Size:'M', Màu:'Đen' }, price:199000, stock:25 },
+    { name: 'Đen - L', displayName: 'Đen / L', attributes: { Size:'L', Màu:'Đen' }, price:199000, stock:18 },
+    { name: 'Trắng - M', displayName: 'Trắng / M', attributes: { Size:'M', Màu:'Trắng' }, price:199000, stock:22 },
+    { name: 'Xanh navy - L', displayName: 'Xanh navy / L', attributes: { Size:'L', Màu:'Xanh navy' }, price:199000, stock:15 },
+    { name: 'Ghi - XL', displayName: 'Ghi / XL', attributes: { Size:'XL', Màu:'Ghi' }, price:199000, stock:8 },
+  ],
+}
+
 
   /* 2) Sơ mi nam chống nhăn */
   {
@@ -387,7 +427,7 @@ const sampleProducts = [
   {
     name: 'Áo polo nam thoáng khí',
     shortDescription: 'Poly-cotton, cổ bo, thoát mồ hôi tốt',
-    description: 'Áo polo phối sợi thoáng khí, giữ form, dễ chăm.',
+    description: 'Áo polo phối sợi thoáng khí, giữ form chuẩn trong suốt quá trình sử dụng, hạn chế nhăn nhàu và dễ dàng giặt ủi. Thiết kế đơn giản nhưng tinh tế, phù hợp cả đi làm, đi học hay dạo phố.',
     price: 259000,
     compareAtPrice: 329000,
     thumbnail: 'https://images.unsplash.com/photo-1530021232320-687d8e3dba1e?w=400&h=400&fit=crop',

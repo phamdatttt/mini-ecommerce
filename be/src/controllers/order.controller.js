@@ -15,7 +15,12 @@ const createOrder = async (req, res, next) => {
   const transaction = await sequelize.transaction();
 
   try {
+    // Guard: phải có user
+    if (!req.user || !req.user.id) {
+      throw new AppError('Bạn chưa đăng nhập hoặc thiếu thông tin người dùng', 401);
+    }
     const userId = req.user.id;
+
     const {
       shippingFirstName,
       shippingLastName,
@@ -71,6 +76,7 @@ const createOrder = async (req, res, next) => {
           ],
         },
       ],
+      transaction,
     });
 
     if (!cart || cart.items.length === 0) {
@@ -79,20 +85,23 @@ const createOrder = async (req, res, next) => {
 
     // Check stock and calculate totals
     let subtotal = 0;
-    const tax = 0; // Calculate tax if needed
-    const shippingCost = 0; // Calculate shipping if needed
-    const discount = 0; // Apply discount if needed
+    const tax = 0;
+    const shippingCost = 0;
+    const discount = 0;
 
     for (const item of cart.items) {
-      const product = item.Product;
-      const variant = item.ProductVariant;
+      // Hỗ trợ cả alias chữ thường và PascalCase
+      const product = item.product || item.Product;
+      const variant = item.variant || item.ProductVariant;
 
-      // Check if product is in stock
+      if (!product) {
+        throw new AppError('Dữ liệu giỏ hàng lỗi: thiếu thông tin sản phẩm', 400);
+      }
+
       if (!product.inStock) {
         throw new AppError(`Sản phẩm "${product.name}" đã hết hàng`, 400);
       }
 
-      // Check stock quantity
       if (variant) {
         if (variant.stockQuantity < item.quantity) {
           throw new AppError(
@@ -107,65 +116,90 @@ const createOrder = async (req, res, next) => {
         );
       }
 
-      // Calculate item price
-      const price = variant ? variant.price : product.price;
+      const price = Number(variant ? variant.price : product.price);
+      if (Number.isNaN(price)) {
+        throw new AppError('Giá sản phẩm không hợp lệ', 400);
+      }
       subtotal += price * item.quantity;
     }
 
-    // Calculate total
     const total = subtotal + tax + shippingCost - discount;
 
-    // Generate order number
-    const date = new Date();
-    const year = date.getFullYear().toString().substr(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const count = await Order.count();
-    const orderNumber = `ORD-${year}${month}-${(count + 1).toString().padStart(5, '0')}`;
+    // Generate unique-ish order number (retry to avoid collisions)
+    const genOrderNumber = () => {
+      const d = new Date();
+      const yy = d.getFullYear().toString().slice(-2);
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const rand = Math.floor(10000 + Math.random() * 90000); // 5 chữ số ngẫu nhiên
+      return `ORD-${yy}${mm}${dd}-${rand}`;
+    };
 
-    // Create order
-    const order = await Order.create(
-      {
-        number: orderNumber,
-        userId,
-        shippingFirstName,
-        shippingLastName,
-        shippingCompany,
-        shippingAddress1,
-        shippingAddress2,
-        shippingCity,
-        shippingState,
-        shippingZip,
-        shippingCountry,
-        shippingPhone,
-        billingFirstName,
-        billingLastName,
-        billingCompany,
-        billingAddress1,
-        billingAddress2,
-        billingCity,
-        billingState,
-        billingZip,
-        billingCountry,
-        billingPhone,
-        paymentMethod,
-        paymentStatus: 'pending',
-        subtotal,
-        tax,
-        shippingCost,
-        discount,
-        total,
-        notes,
-      },
-      { transaction }
-    );
+    let order;
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const orderNumber = genOrderNumber();
+      try {
+        order = await Order.create(
+          {
+            number: orderNumber,
+            userId,
+            shippingFirstName,
+            shippingLastName,
+            shippingCompany,
+            shippingAddress1,
+            shippingAddress2,
+            shippingCity,
+            shippingState,
+            shippingZip,
+            shippingCountry,
+            shippingPhone,
+            billingFirstName,
+            billingLastName,
+            billingCompany,
+            billingAddress1,
+            billingAddress2,
+            billingCity,
+            billingState,
+            billingZip,
+            billingCountry,
+            billingPhone,
+            paymentMethod,
+            paymentStatus: 'pending',
+            subtotal,
+            tax,
+            shippingCost,
+            discount,
+            total,
+            notes,
+          },
+          { transaction }
+        );
+        break;
+      } catch (e) {
+        const isNumberUniqueErr =
+          e?.name === 'SequelizeUniqueConstraintError' &&
+          Array.isArray(e.errors) &&
+          e.errors.some((er) => er.path === 'number');
+        if (isNumberUniqueErr && attempt < 5) {
+          console.warn(`ORDER NUMBER COLLISION, RETRY #${attempt} → ${orderNumber}`);
+          continue;
+        }
+        throw e;
+      }
+    }
+
+    if (!order) {
+      throw new AppError('Không thể cấp số đơn hàng. Vui lòng thử lại.', 500);
+    }
 
     // Create order items
     const orderItems = [];
     for (const item of cart.items) {
-      const product = item.Product;
-      const variant = item.ProductVariant;
-      const price = variant ? variant.price : product.price;
-      const subtotal = price * item.quantity;
+      const product = item.product || item.Product;
+      const variant = item.variant || item.ProductVariant;
+
+      const price = Number(variant ? variant.price : product.price);
+      const itemSubtotal = price * item.quantity;
 
       const orderItem = await OrderItem.create(
         {
@@ -176,7 +210,7 @@ const createOrder = async (req, res, next) => {
           sku: variant ? variant.sku : product.sku,
           price,
           quantity: item.quantity,
-          subtotal,
+          subtotal: itemSubtotal,
           image: product.thumbnail,
           attributes: variant ? { variant: variant.name } : {},
         },
@@ -219,27 +253,31 @@ const createOrder = async (req, res, next) => {
 
     await transaction.commit();
 
-    // Send order confirmation email
-    await emailService.sendOrderConfirmationEmail(req.user.email, {
-      orderNumber: order.number,
-      orderDate: order.createdAt,
-      total: order.total,
-      items: orderItems.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        subtotal: item.subtotal,
-      })),
-      shippingAddress: {
-        name: `${order.shippingFirstName} ${order.shippingLastName}`,
-        address1: order.shippingAddress1,
-        address2: order.shippingAddress2,
-        city: order.shippingCity,
-        state: order.shippingState,
-        zip: order.shippingZip,
-        country: order.shippingCountry,
-      },
-    });
+    // Gửi email tách riêng, không làm rơi response
+    try {
+      await emailService.sendOrderConfirmationEmail(req.user.email, {
+        orderNumber: order.number,
+        orderDate: order.createdAt,
+        total: order.total,
+        items: orderItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.subtotal,
+        })),
+        shippingAddress: {
+          name: `${order.shippingFirstName} ${order.shippingLastName}`,
+          address1: order.shippingAddress1,
+          address2: order.shippingAddress2,
+          city: order.shippingCity,
+          state: order.shippingState,
+          zip: order.shippingZip,
+          country: order.shippingCountry,
+        },
+      });
+    } catch (mailErr) {
+      console.error('EMAIL ERROR >>>', mailErr?.message || mailErr);
+    }
 
     res.status(201).json({
       status: 'success',
@@ -254,8 +292,28 @@ const createOrder = async (req, res, next) => {
       },
     });
   } catch (error) {
-    await transaction.rollback();
-    next(error);
+    // Log chi tiết trước khi rollback
+    console.error('ORDER ERROR >>> name=', error?.name);
+    console.error('ORDER ERROR >>> message=', error?.message);
+    if (error?.errors) {
+      console.error(
+        'ORDER ERROR >>> details=',
+        error.errors.map((e) => ({
+          type: e.type,
+          path: e.path,
+          message: e.message,
+          value: e.value,
+        }))
+      );
+    }
+    console.error('ORDER ERROR >>> stack=\n', error?.stack);
+
+    try {
+      await transaction.rollback();
+    } catch (rbErr) {
+      console.error('ROLLBACK ERROR >>>', rbErr);
+    }
+    return next(error);
   }
 };
 
@@ -367,12 +425,8 @@ const cancelOrder = async (req, res, next) => {
         {
           association: 'items',
           include: [
-            {
-              model: Product,
-            },
-            {
-              model: ProductVariant,
-            },
+            { model: Product },
+            { model: ProductVariant },
           ],
         },
       ],
@@ -395,34 +449,42 @@ const cancelOrder = async (req, res, next) => {
       { transaction }
     );
 
-    // Restore stock
+    // Restore stock (hỗ trợ cả 2 kiểu alias)
     for (const item of order.items) {
       if (item.variantId) {
-        const variant = item.ProductVariant;
-        await variant.update(
-          {
-            stockQuantity: variant.stockQuantity + item.quantity,
-          },
-          { transaction }
-        );
+        const variant = item.variant || item.ProductVariant;
+        if (variant) {
+          await variant.update(
+            {
+              stockQuantity: variant.stockQuantity + item.quantity,
+            },
+            { transaction }
+          );
+        }
       } else {
-        const product = item.Product;
-        await product.update(
-          {
-            stockQuantity: product.stockQuantity + item.quantity,
-          },
-          { transaction }
-        );
+        const product = item.product || item.Product;
+        if (product) {
+          await product.update(
+            {
+              stockQuantity: product.stockQuantity + item.quantity,
+            },
+            { transaction }
+          );
+        }
       }
     }
 
     await transaction.commit();
 
-    // Send cancellation email
-    await emailService.sendOrderCancellationEmail(req.user.email, {
-      orderNumber: order.number,
-      orderDate: order.createdAt,
-    });
+    // Bọc email
+    try {
+      await emailService.sendOrderCancellationEmail(req.user.email, {
+        orderNumber: order.number,
+        orderDate: order.createdAt,
+      });
+    } catch (mailErr) {
+      console.error('EMAIL ERROR >>>', mailErr?.message || mailErr);
+    }
 
     res.status(200).json({
       status: 'success',
@@ -434,7 +496,11 @@ const cancelOrder = async (req, res, next) => {
       },
     });
   } catch (error) {
-    await transaction.rollback();
+    try {
+      await transaction.rollback();
+    } catch (rbErr) {
+      console.error('ROLLBACK ERROR >>>', rbErr);
+    }
     next(error);
   }
 };
@@ -555,7 +621,6 @@ const repayOrder = async (req, res, next) => {
     const origin = req.get('origin') || 'http://localhost:5175';
 
     // Tạo URL thanh toán giả lập
-    // Trong thực tế, bạn sẽ tích hợp với cổng thanh toán thực tế ở đây
     const paymentUrl = `${origin}/checkout?repayOrder=${order.id}&amount=${order.total}`;
 
     res.status(200).json({
